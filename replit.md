@@ -71,14 +71,14 @@ This is a Flask-based web application for managing construction materials invent
 - **Bootstrap Icons**: Icon library
 
 ### Database
-- **SQLite**: Default database (configurable via environment variable)
-- **Database URL**: Configurable through `DATABASE_URL` environment variable
+- **SQLite3**: Simple file-based database (stock_management.db)
+- **Auto-creation**: Database file is created automatically on first run
 
 ## Deployment Strategy
 
 ### Environment Configuration
-- **Secret Key**: Configurable via `SESSION_SECRET` environment variable
-- **Database URL**: Configurable via `DATABASE_URL` environment variable
+- **Secret Key**: Configurable via `SESSION_SECRET` environment variable (optional, has default)
+- **Database**: SQLite3 file-based database (stock_management.db)
 - **Debug Mode**: Enabled for development (should be disabled in production)
 
 ### Application Setup
@@ -92,7 +92,10 @@ This is a Flask-based web application for managing construction materials invent
 
 ## Recent Changes
 
-### July 07, 2025 - Authentication System & Branding Update
+### July 07, 2025 - Database Migration & Authentication System Update
+- **Switched from PostgreSQL to SQLite3** for easier setup and deployment
+- Updated all configuration files to use SQLite3 database
+- Removed PostgreSQL dependencies from setup instructions
 - Added complete user authentication system with Flask-Login
 - Created beautiful login and signup pages with form validation
 - Implemented secure password hashing and user registration

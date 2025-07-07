@@ -20,7 +20,7 @@ A comprehensive web-based stock management system for construction materials bui
 ## Technology Stack
 
 - **Backend**: Flask (Python)
-- **Database**: PostgreSQL with SQLAlchemy ORM
+- **Database**: SQLite3 with SQLAlchemy ORM
 - **Frontend**: Bootstrap 5, Tailwind CSS, Vanilla JavaScript
 - **Authentication**: Flask-Login with password hashing
 - **Icons**: Bootstrap Icons
@@ -30,7 +30,6 @@ A comprehensive web-based stock management system for construction materials bui
 Before running this project, make sure you have:
 
 - Python 3.11 or higher
-- PostgreSQL database
 - Visual Studio Code
 - Git (optional)
 
@@ -82,38 +81,26 @@ pip install -r requirements.txt
 If `requirements.txt` doesn't exist, install packages manually:
 
 ```bash
-pip install flask flask-sqlalchemy flask-login gunicorn psycopg2-binary werkzeug
+pip install flask flask-sqlalchemy flask-login gunicorn werkzeug
 ```
 
-### 6. Set Environment Variables
+### 6. Set Environment Variables (Optional)
 
-Create a `.env` file in the project root:
+Create a `.env` file in the project root for custom settings:
 
 ```env
 SESSION_SECRET=your-secret-key-here-change-in-production
-DATABASE_URL=postgresql://username:password@localhost:5432/stock_management
-PGHOST=localhost
-PGPORT=5432
-PGUSER=your_username
-PGPASSWORD=your_password
-PGDATABASE=stock_management
 ```
 
-### 7. Set Up Database
+Note: SQLite database will be created automatically when you run the application.
 
-Make sure PostgreSQL is running and create the database:
-
-```sql
-CREATE DATABASE stock_management;
-```
-
-### 8. Configure VS Code Python Interpreter
+### 7. Configure VS Code Python Interpreter
 
 1. Press `Ctrl+Shift+P` to open command palette
 2. Type "Python: Select Interpreter"
 3. Select the interpreter from your virtual environment (`venv/Scripts/python.exe` on Windows or `venv/bin/python` on macOS/Linux)
 
-### 9. Run the Application
+### 8. Run the Application
 
 #### Option A: Using VS Code Debugger (Recommended)
 
@@ -135,7 +122,7 @@ python main.py
 gunicorn --bind 0.0.0.0:5000 --reload main:app
 ```
 
-### 10. Access the Application
+### 9. Access the Application
 
 Open your browser and navigate to:
 ```
@@ -207,9 +194,8 @@ construction-stock-management/
 - Verify all packages are installed: `pip list`
 
 **2. Database Connection Errors**
-- Check PostgreSQL is running
-- Verify database credentials in `.env` file
-- Ensure database exists
+- SQLite database is created automatically
+- Check if you have write permissions in the project directory
 
 **3. Port Already in Use**
 - Change port in `main.py`: `app.run(host="0.0.0.0", port=5001, debug=True)`
@@ -248,7 +234,7 @@ For production deployment:
 2. Use a production WSGI server like Gunicorn
 3. Set strong `SESSION_SECRET`
 4. Use environment variables for sensitive data
-5. Configure PostgreSQL for production
+5. Consider upgrading to PostgreSQL for production if needed
 
 ## Built With
 
