@@ -90,8 +90,27 @@ This is a Flask-based web application for managing construction materials invent
 - **Auto-creation**: Database tables are automatically created on application startup
 - **Connection Pooling**: Configured with pool recycling and pre-ping for reliability
 
-## Changelog
-- July 07, 2025. Initial setup
+## Recent Changes
+
+### July 07, 2025 - Authentication System & Branding Update
+- Added complete user authentication system with Flask-Login
+- Created beautiful login and signup pages with form validation
+- Implemented secure password hashing and user registration
+- Protected all stock management routes with login requirements
+- Added user dropdown menu with logout functionality
+- Updated all branding to include "dnldynamicsolutions.com"
+- Created comprehensive README.md with Visual Studio Code setup instructions
+- Added setup.py script for easy project installation
+
+### July 07, 2025 - Initial Setup
+- Built Flask-based construction stock management system
+- Implemented 6 category dashboard with responsive design
+- Created stock entry system with print functionality
+- Integrated Bootstrap 5 + Tailwind CSS for modern UI
+
+## Deployment Information
+
+The system now requires user authentication before accessing any stock management features. Users must create an account and log in to access the dashboard. All pages display "Built with dnldynamicsolutions.com" branding.
 
 ## User Preferences
 
