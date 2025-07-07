@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Construction Stock Management{% endblock %}
+
+{% block content %}
+<div class="text-center mb-8">
+    <h1 class="text-4xl font-bold text-construction-blue mb-4">
+        <i class="bi bi-building"></i>
+        Construction Stock Dashboard
+    </h1>
+    <p class="text-lg text-gray-600">Manage your construction materials inventory by category</p>
+</div>
+
+<div class="row g-4">
+    {% for category_key, category_info in categories.items() %}
+    <div class="col-md-6 col-lg-4">
+        <div class="card category-card h-100 shadow-lg border-0 overflow-hidden position-relative">
+            <div class="card-body d-flex flex-column p-4">
+                <!-- Category Icon & Name -->
+                <div class="text-center mb-4">
+                    <div class="category-icon mb-3">
+                        <span class="display-1">{{ category_info.icon }}</span>
+                    </div>
+                    <h4 class="card-title text-white fw-bold mb-0">{{ category_info.name }}</h4>
+                </div>
+                
+                <!-- Category Stats -->
+                <div class="category-stats mb-4">
+                    <div class="row text-center">
+                        <div class="col-6">
+                            <div class="stat-item">
+                                <i class="bi bi-box-seam text-white-50"></i>
+                                <div class="stat-number text-white fw-bold">--</div>
+                                <div class="stat-label text-white-50 small">Total Items</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="stat-item">
+                                <i class="bi bi-clock text-white-50"></i>
+                                <div class="stat-number text-white fw-bold">--</div>
+                                <div class="stat-label text-white-50 small">Last Entry</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="mt-auto">
+                    <a href="{{ url_for('category_view', category_name=category_key) }}" 
+                       class="btn btn-light btn-lg w-100 fw-bold">
+                        <i class="bi bi-arrow-right-circle"></i>
+                        Manage Stock
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Gradient Background -->
+            <div class="category-gradient bg-gradient-to-br {{ category_info.gradient }}"></div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Quick Stats Section -->
+<div class="row mt-8">
+    <div class="col-12">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-construction-blue text-white">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-graph-up"></i>
+                    Quick Overview
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-3 col-6 mb-3">
+                        <div class="stat-card">
+                            <i class="bi bi-boxes text-construction-blue fs-1"></i>
+                            <h3 class="text-construction-blue fw-bold">--</h3>
+                            <p class="text-muted">Total Entries</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6 mb-3">
+                        <div class="stat-card">
+                            <i class="bi bi-calendar-check text-construction-orange fs-1"></i>
+                            <h3 class="text-construction-orange fw-bold">--</h3>
+                            <p class="text-muted">This Month</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6 mb-3">
+                        <div class="stat-card">
+                            <i class="bi bi-pie-chart text-green-600 fs-1"></i>
+                            <h3 class="text-green-600 fw-bold">6</h3>
+                            <p class="text-muted">Categories</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6 mb-3">
+                        <div class="stat-card">
+                            <i class="bi bi-clock-history text-purple-600 fs-1"></i>
+                            <h3 class="text-purple-600 fw-bold">--</h3>
+                            <p class="text-muted">Last Update</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

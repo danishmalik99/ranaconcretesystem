@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+
+{% block title %}{{ category_info.name }} - Construction Stock Management{% endblock %}
+
+{% block content %}
+<!-- Category Header -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex align-items-center">
+        <a href="{{ url_for('index') }}" class="btn btn-outline-secondary me-3">
+            <i class="bi bi-arrow-left"></i>
+            Back to Dashboard
+        </a>
+        <div>
+            <h1 class="text-construction-blue mb-0">
+                <span class="me-2" style="font-size: 2rem;">{{ category_info.icon }}</span>
+                {{ category_info.name }} Stock
+            </h1>
+            <p class="text-muted mb-0">Manage inventory for {{ category_info.name.lower() }} category</p>
+        </div>
+    </div>
+    <div class="d-flex gap-2">
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addStockModal">
+            <i class="bi bi-plus-circle"></i>
+            Add Stock
+        </button>
+        <a href="{{ url_for('print_category', category_name=category) }}" 
+           class="btn btn-primary" target="_blank">
+            <i class="bi bi-printer"></i>
+            Print All
+        </a>
+    </div>
+</div>
+
+<!-- Stock Entries Table -->
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-light">
+        <h5 class="card-title mb-0">
+            <i class="bi bi-table"></i>
+            Stock Entries
+            <span class="badge bg-secondary ms-2">{{ entries|length }} entries</span>
+        </h5>
+    </div>
+    <div class="card-body p-0">
+        {% if entries %}
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Serial No</th>
+                        <th>Date & Time</th>
+                        <th>Size</th>
+                        <th>Quantity</th>
+                        <th>Product Details</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in entries %}
+                    <tr>
+                        <td>
+                            <strong class="text-construction-blue">#{{ entry.serial_no }}</strong>
+                        </td>
+                        <td>
+                            <div class="text-muted small">{{ entry.timestamp|format_datetime }}</div>
+                        </td>
+                        <td>
+                            <span class="badge bg-light text-dark">{{ entry.size }}</span>
+                        </td>
+                        <td>
+                            <span class="badge bg-success">{{ entry.quantity }}</span>
+                        </td>
+                        <td>
+                            <div class="text-truncate" style="max-width: 200px;" title="{{ entry.product_details }}">
+                                {{ entry.product_details if entry.product_details else '-' }}
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            <div class="btn-group" role="group">
+                                <a href="{{ url_for('print_entry', serial_no=entry.serial_no) }}" 
+                                   class="btn btn-sm btn-outline-primary" target="_blank" title="Print Entry">
+                                    <i class="bi bi-printer"></i>
+                                </a>
+                                <button class="btn btn-sm btn-outline-danger" 
+                                        onclick="confirmDelete({{ entry.serial_no }})" title="Delete Entry">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-inbox text-muted" style="font-size: 4rem;"></i>
+            <h4 class="text-muted mt-3">No stock entries found</h4>
+            <p class="text-muted">Start by adding your first stock entry for {{ category_info.name.lower() }}</p>
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addStockModal">
+                <i class="bi bi-plus-circle"></i>
+                Add First Entry
+            </button>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Add Stock Modal -->
+<div class="modal fade" id="addStockModal" tabindex="-1" aria-labelledby="addStockModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="addStockModalLabel">
+                    <i class="bi bi-plus-circle"></i>
+                    Add New Stock Entry - {{ category_info.name }}
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for('add_stock') }}">
+                <div class="modal-body">
+                    <input type="hidden" name="category" value="{{ category }}">
+                    
+                    <div class="mb-3">
+                        <label for="size" class="form-label">
+                            <i class="bi bi-rulers"></i>
+                            Size <span class="text-danger">*</span>
+                        </label>
+                        <input type="text" class="form-control" id="size" name="size" required 
+                               placeholder="e.g., 12x8x6 inches">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="quantity" class="form-label">
+                            <i class="bi bi-hash"></i>
+                            Quantity <span class="text-danger">*</span>
+                        </label>
+                        <input type="number" class="form-control" id="quantity" name="quantity" required 
+                               min="1" placeholder="Enter quantity">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="product_details" class="form-label">
+                            <i class="bi bi-card-text"></i>
+                            Product Details <span class="text-muted">(Optional)</span>
+                        </label>
+                        <textarea class="form-control" id="product_details" name="product_details" rows="3" 
+                                  placeholder="Enter additional product details, specifications, or notes"></textarea>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i>
+                        <strong>Note:</strong> Serial number and timestamp will be automatically generated upon submission.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle"></i>
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-check-circle"></i>
+                        Add Stock Entry
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteModalLabel">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    Confirm Delete
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this stock entry?</p>
+                <p class="text-muted">This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle"></i>
+                    Cancel
+                </button>
+                <a href="#" id="deleteConfirmBtn" class="btn btn-danger">
+                    <i class="bi bi-trash"></i>
+                    Delete Entry
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function confirmDelete(serialNo) {
+    const deleteBtn = document.getElementById('deleteConfirmBtn');
+    deleteBtn.href = `{{ url_for('delete_stock', serial_no=0) }}`.replace('0', serialNo);
+    new bootstrap.Modal(document.getElementById('deleteModal')).show();
+}
+</script>
+{% endblock %}

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Print Entry #{{ entry.serial_no }} - Construction Stock Management</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: white;
+            color: #333;
+        }
+        
+        .print-header {
+            border-bottom: 3px solid #1e40af;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .company-logo {
+            font-size: 2.5rem;
+            color: #1e40af;
+        }
+        
+        .entry-details {
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .category-badge {
+            font-size: 1.2rem;
+            padding: 10px 20px;
+            border-radius: 25px;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+        
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #374151;
+        }
+        
+        .detail-value {
+            font-weight: 500;
+            color: #1f2937;
+        }
+        
+        .print-footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+            color: #6b7280;
+        }
+        
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact;
+                color-adjust: exact;
+            }
+            
+            .no-print {
+                display: none !important;
+            }
+            
+            .print-only {
+                display: block !important;
+            }
+            
+            .entry-details {
+                break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <!-- Print Header -->
+        <div class="print-header">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="company-logo">
+                        <i class="bi bi-building"></i>
+                        Construction Stock Management
+                    </h1>
+                    <p class="text-muted mb-0">Stock Entry Receipt</p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <div class="text-muted">
+                        <div><strong>Print Date:</strong> <span id="printDate"></span></div>
+                        <div><strong>Entry ID:</strong> #{{ entry.serial_no }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Entry Details -->
+        <div class="entry-details">
+            <div class="text-center mb-4">
+                <div class="category-badge bg-primary text-white">
+                    <span class="me-2">{{ category_info.icon }}</span>
+                    {{ category_info.name }}
+                </div>
+            </div>
+            
+            <div class="detail-row">
+                <div class="detail-label">
+                    <i class="bi bi-hash text-primary"></i>
+                    Serial Number
+                </div>
+                <div class="detail-value">#{{ entry.serial_no }}</div>
+            </div>
+            
+            <div class="detail-row">
+                <div class="detail-label">
+                    <i class="bi bi-tag text-primary"></i>
+                    Category
+                </div>
+                <div class="detail-value">{{ category_info.name }}</div>
+            </div>
+            
+            <div class="detail-row">
+                <div class="detail-label">
+                    <i class="bi bi-rulers text-primary"></i>
+                    Size
+                </div>
+                <div class="detail-value">{{ entry.size }}</div>
+            </div>
+            
+            <div class="detail-row">
+                <div class="detail-label">
+                    <i class="bi bi-box-seam text-primary"></i>
+                    Quantity
+                </div>
+                <div class="detail-value">{{ entry.quantity }}</div>
+            </div>
+            
+            <div class="detail-row">
+                <div class="detail-label">
+                    <i class="bi bi-calendar-check text-primary"></i>
+                    Date & Time
+                </div>
+                <div class="detail-value">{{ entry.timestamp|format_datetime }}</div>
+            </div>
+            
+            {% if entry.product_details %}
+            <div class="detail-row">
+                <div class="detail-label">
+                    <i class="bi bi-card-text text-primary"></i>
+                    Product Details
+                </div>
+                <div class="detail-value">{{ entry.product_details }}</div>
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- Print Footer -->
+        <div class="print-footer">
+            <p class="mb-1">Construction Stock Management System</p>
+            <p class="mb-0">This is a computer-generated receipt.</p>
+        </div>
+        
+        <!-- No Print Buttons -->
+        <div class="text-center mt-4 no-print">
+            <button onclick="window.print()" class="btn btn-primary me-2">
+                <i class="bi bi-printer"></i> Print
+            </button>
+            <button onclick="window.close()" class="btn btn-secondary">
+                <i class="bi bi-x-circle"></i> Close
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        // Set current date
+        document.addEventListener('DOMContentLoaded', function() {
+            const printDate = new Date().toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            document.getElementById('printDate').textContent = printDate;
+        });
+    </script>
+</body>
+</html>

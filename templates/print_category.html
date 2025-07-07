@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Print {{ category_info.name }} Stock - Construction Stock Management</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: white;
+            color: #333;
+        }
+        
+        .print-header {
+            border-bottom: 3px solid #1e40af;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .company-logo {
+            font-size: 2.5rem;
+            color: #1e40af;
+        }
+        
+        .category-header {
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .category-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+        
+        .stats-row {
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 10px;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #1e40af;
+        }
+        
+        .stat-label {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+        
+        .table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        
+        .table th {
+            background-color: #1e40af;
+            color: white;
+            font-weight: 600;
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #1e40af;
+        }
+        
+        .table td {
+            padding: 10px 12px;
+            border: 1px solid #e5e7eb;
+            vertical-align: middle;
+        }
+        
+        .table tbody tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+        
+        .table tbody tr:hover {
+            background-color: #e0e7ff;
+        }
+        
+        .serial-number {
+            font-weight: bold;
+            color: #1e40af;
+        }
+        
+        .quantity-badge {
+            background: #10b981;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .size-badge {
+            background: #f3f4f6;
+            color: #374151;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+        
+        .print-footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+            color: #6b7280;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #6b7280;
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+        
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact;
+                color-adjust: exact;
+            }
+            
+            .no-print {
+                display: none !important;
+            }
+            
+            .print-only {
+                display: block !important;
+            }
+            
+            .table {
+                page-break-inside: avoid;
+            }
+            
+            .table tbody tr {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <!-- Print Header -->
+        <div class="print-header">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="company-logo">
+                        <i class="bi bi-building"></i>
+                        Construction Stock Management
+                    </h1>
+                    <p class="text-muted mb-0">Complete Stock Report</p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <div class="text-muted">
+                        <div><strong>Print Date:</strong> <span id="printDate"></span></div>
+                        <div><strong>Category:</strong> {{ category_info.name }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Category Header -->
+        <div class="category-header text-center">
+            <div class="category-icon">{{ category_info.icon }}</div>
+            <h2 class="mb-0">{{ category_info.name }} Stock Inventory</h2>
+            <p class="mb-0 opacity-75">Complete listing of all stock entries</p>
+        </div>
+        
+        <!-- Statistics -->
+        <div class="stats-row">
+            <div class="row">
+                <div class="col-md-3 col-6">
+                    <div class="stat-item">
+                        <div class="stat-number">{{ entries|length }}</div>
+                        <div class="stat-label">Total Entries</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-item">
+                        <div class="stat-number">{{ entries|sum(attribute='quantity') or 0 }}</div>
+                        <div class="stat-label">Total Quantity</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-item">
+                        <div class="stat-number">{{ entries|map(attribute='size')|unique|list|length }}</div>
+                        <div class="stat-label">Unique Sizes</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-item">
+                        <div class="stat-number">{{ entries|selectattr('timestamp')|map(attribute='timestamp')|map('strftime', '%Y-%m')|unique|list|length }}</div>
+                        <div class="stat-label">Active Months</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Stock Entries Table -->
+        {% if entries %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Serial No</th>
+                        <th>Date & Time</th>
+                        <th>Size</th>
+                        <th>Quantity</th>
+                        <th>Product Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in entries %}
+                    <tr>
+                        <td>
+                            <span class="serial-number">#{{ entry.serial_no }}</span>
+                        </td>
+                        <td>
+                            <div>{{ entry.timestamp|format_date }}</div>
+                            <small class="text-muted">{{ entry.timestamp.strftime('%H:%M') }}</small>
+                        </td>
+                        <td>
+                            <span class="size-badge">{{ entry.size }}</span>
+                        </td>
+                        <td>
+                            <span class="quantity-badge">{{ entry.quantity }}</span>
+                        </td>
+                        <td>
+                            <div style="max-width: 200px; word-wrap: break-word;">
+                                {{ entry.product_details if entry.product_details else '-' }}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="bi bi-inbox"></i>
+            <h4>No Stock Entries Found</h4>
+            <p>There are currently no stock entries for {{ category_info.name }} category.</p>
+        </div>
+        {% endif %}
+        
+        <!-- Print Footer -->
+        <div class="print-footer">
+            <p class="mb-1">Construction Stock Management System</p>
+            <p class="mb-0">This is a computer-generated report containing {{ entries|length }} entries.</p>
+        </div>
+        
+        <!-- No Print Buttons -->
+        <div class="text-center mt-4 no-print">
+            <button onclick="window.print()" class="btn btn-primary me-2">
+                <i class="bi bi-printer"></i> Print Report
+            </button>
+            <button onclick="window.close()" class="btn btn-secondary">
+                <i class="bi bi-x-circle"></i> Close
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        // Set current date
+        document.addEventListener('DOMContentLoaded', function() {
+            const printDate = new Date().toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            document.getElementById('printDate').textContent = printDate;
+        });
+    </script>
+</body>
+</html>
