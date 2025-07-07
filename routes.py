@@ -6,39 +6,39 @@ from sqlalchemy import extract
 
 # Category configuration with colors and icons
 CATEGORIES = {
-    'godown': {
-        'name': 'Godown',
-        'icon': '🏠',
+    'goder': {
+        'name': 'Goder',
+        'icon': 'bi-building',
         'color': 'bg-blue-500',
         'gradient': 'from-blue-400 to-blue-600'
     },
     'double_tt': {
         'name': 'Double TT',
-        'icon': '🏗️',
+        'icon': 'bi-layers',
         'color': 'bg-green-500',
         'gradient': 'from-green-400 to-green-600'
     },
     'slop': {
         'name': 'Slop',
-        'icon': '🧱',
+        'icon': 'bi-bricks',
         'color': 'bg-red-500',
         'gradient': 'from-red-400 to-red-600'
     },
     'column': {
         'name': 'Column',
-        'icon': '🪵',
+        'icon': 'bi-columns',
         'color': 'bg-yellow-500',
         'gradient': 'from-yellow-400 to-yellow-600'
     },
     'phhty': {
         'name': 'Phhty',
-        'icon': '🚧',
+        'icon': 'bi-tools',
         'color': 'bg-purple-500',
         'gradient': 'from-purple-400 to-purple-600'
     },
     'others': {
         'name': 'Others',
-        'icon': '📦',
+        'icon': 'bi-collection',
         'color': 'bg-gray-500',
         'gradient': 'from-gray-400 to-gray-600'
     }

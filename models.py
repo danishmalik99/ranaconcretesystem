@@ -25,7 +25,7 @@ class StockEntry(db.Model):
     __tablename__ = 'stock_entries'
     
     CATEGORY_CHOICES = [
-        ('godown', 'Godown'),
+        ('goder', 'Goder'),
         ('double_tt', 'Double TT'),
         ('slop', 'Slop'),
         ('column', 'Column'),

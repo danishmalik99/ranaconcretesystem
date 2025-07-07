@@ -92,6 +92,16 @@ This is a Flask-based web application for managing construction materials invent
 
 ## Recent Changes
 
+### July 07, 2025 - Modern UI Redesign & Property Updates
+- **Changed "Godown" to "Goder"** - Updated property name throughout the system and database
+- **Professional Icons** - Replaced emoji icons with Bootstrap Icons for professional appearance
+- **Modern Card Design** - Added glass-morphism effects, floating animations, and decorative elements
+- **Enhanced Styling** - Implemented 3D hover effects, backdrop filters, and smooth transitions
+- **Improved User Experience** - Added floating decorative elements and professional icon containers
+- **Updated Database** - Migrated existing "godown" entries to "goder" category
+- **Print Templates** - Updated to use professional Bootstrap Icons instead of emoji
+- **CSS Enhancements** - Added modern gradient variables and animation keyframes
+
 ### July 07, 2025 - Fixed Dashboard Statistics & Category Counts
 - **Fixed Quick Overview section** - Now displays real-time statistics instead of "--"
 - **Fixed Category Cards** - Now showing actual entry counts and last entry dates
