@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Construction Stock Management</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 0;
+        }
+        
+        .signup-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            max-width: 450px;
+            width: 100%;
+        }
+        
+        .signup-header {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .signup-body {
+            padding: 2rem;
+        }
+        
+        .form-control {
+            border-radius: 8px;
+            border: 2px solid #e5e7eb;
+            padding: 0.75rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            border-color: #10b981;
+            box-shadow: 0 0 0 0.2rem rgba(16, 185, 129, 0.25);
+        }
+        
+        .btn-signup {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-signup:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+        }
+        
+        .company-logo {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .company-info {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+        
+        .company-info strong {
+            color: #10b981;
+        }
+        
+        .password-strength {
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+        
+        .strength-weak { color: #dc2626; }
+        .strength-medium { color: #d97706; }
+        .strength-strong { color: #059669; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="signup-card">
+                    <!-- Signup Header -->
+                    <div class="signup-header">
+                        <div class="company-logo">
+                            <i class="bi bi-person-plus"></i>
+                        </div>
+                        <h2 class="mb-0">Create Account</h2>
+                        <p class="mb-0 opacity-75">Join Construction Stock Management</p>
+                    </div>
+                    
+                    <!-- Signup Form -->
+                    <div class="signup-body">
+                        <!-- Flash Messages -->
+                        {% with messages = get_flashed_messages(with_categories=true) %}
+                            {% if messages %}
+                                {% for category, message in messages %}
+                                    <div class="alert alert-{{ 'danger' if category == 'error' else 'success' if category == 'success' else 'info' }} alert-dismissible fade show" role="alert">
+                                        <i class="bi bi-{{ 'exclamation-triangle' if category == 'error' else 'check-circle' if category == 'success' else 'info-circle' }}"></i>
+                                        {{ message }}
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        {% endwith %}
+                        
+                        <form method="POST" action="{{ url_for('signup') }}" class="needs-validation" novalidate>
+                            <div class="mb-3">
+                                <label for="username" class="form-label">
+                                    <i class="bi bi-person text-success"></i>
+                                    Username
+                                </label>
+                                <input type="text" class="form-control" id="username" name="username" 
+                                       placeholder="Choose a username" required minlength="3">
+                                <div class="invalid-feedback">
+                                    Username must be at least 3 characters long.
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="email" class="form-label">
+                                    <i class="bi bi-envelope text-success"></i>
+                                    Email Address
+                                </label>
+                                <input type="email" class="form-control" id="email" name="email" 
+                                       placeholder="Enter your email address" required>
+                                <div class="invalid-feedback">
+                                    Please enter a valid email address.
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="password" class="form-label">
+                                    <i class="bi bi-lock text-success"></i>
+                                    Password
+                                </label>
+                                <input type="password" class="form-control" id="password" name="password" 
+                                       placeholder="Create a strong password" required minlength="6">
+                                <div class="invalid-feedback">
+                                    Password must be at least 6 characters long.
+                                </div>
+                                <div id="passwordStrength" class="password-strength"></div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="confirm_password" class="form-label">
+                                    <i class="bi bi-lock-fill text-success"></i>
+                                    Confirm Password
+                                </label>
+                                <input type="password" class="form-control" id="confirm_password" name="confirm_password" 
+                                       placeholder="Confirm your password" required>
+                                <div class="invalid-feedback">
+                                    Please confirm your password.
+                                </div>
+                                <div id="passwordMatch" class="password-strength"></div>
+                            </div>
+                            
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-success btn-signup">
+                                    <i class="bi bi-person-check"></i>
+                                    Create Account
+                                </button>
+                            </div>
+                        </form>
+                        
+                        <div class="text-center mt-3">
+                            <p class="mb-0">Already have an account? 
+                                <a href="{{ url_for('login') }}" class="text-success text-decoration-none fw-bold">Sign In</a>
+                            </p>
+                        </div>
+                        
+                        <!-- Company Info -->
+                        <div class="company-info">
+                            <p class="mb-0">
+                                <i class="bi bi-globe"></i>
+                                Built with <strong>dnldynamicsolutions.com</strong>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Form validation
+        (function() {
+            'use strict';
+            window.addEventListener('load', function() {
+                var forms = document.getElementsByClassName('needs-validation');
+                var validation = Array.prototype.filter.call(forms, function(form) {
+                    form.addEventListener('submit', function(event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+        
+        // Password strength indicator
+        document.getElementById('password').addEventListener('input', function() {
+            const password = this.value;
+            const strengthDiv = document.getElementById('passwordStrength');
+            
+            if (password.length === 0) {
+                strengthDiv.textContent = '';
+                return;
+            }
+            
+            let strength = 0;
+            let feedback = [];
+            
+            if (password.length >= 6) strength += 1;
+            if (password.match(/[a-z]/)) strength += 1;
+            if (password.match(/[A-Z]/)) strength += 1;
+            if (password.match(/[0-9]/)) strength += 1;
+            if (password.match(/[^a-zA-Z0-9]/)) strength += 1;
+            
+            if (strength < 3) {
+                strengthDiv.textContent = 'Weak password';
+                strengthDiv.className = 'password-strength strength-weak';
+            } else if (strength < 4) {
+                strengthDiv.textContent = 'Medium password';
+                strengthDiv.className = 'password-strength strength-medium';
+            } else {
+                strengthDiv.textContent = 'Strong password';
+                strengthDiv.className = 'password-strength strength-strong';
+            }
+            
+            checkPasswordMatch();
+        });
+        
+        // Password match checker
+        document.getElementById('confirm_password').addEventListener('input', checkPasswordMatch);
+        
+        function checkPasswordMatch() {
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm_password').value;
+            const matchDiv = document.getElementById('passwordMatch');
+            
+            if (confirmPassword.length === 0) {
+                matchDiv.textContent = '';
+                return;
+            }
+            
+            if (password === confirmPassword) {
+                matchDiv.textContent = 'Passwords match';
+                matchDiv.className = 'password-strength strength-strong';
+            } else {
+                matchDiv.textContent = 'Passwords do not match';
+                matchDiv.className = 'password-strength strength-weak';
+            }
+        }
+    </script>
+</body>
+</html>

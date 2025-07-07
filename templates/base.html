@@ -44,6 +44,19 @@
                     </a>
                 </div>
                 <div class="flex items-center space-x-4">
+                    {% if current_user.is_authenticated %}
+                    <div class="dropdown">
+                        <button class="btn btn-outline-light btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle"></i>
+                            {{ current_user.username }}
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ url_for('logout') }}">
+                                <i class="bi bi-box-arrow-right"></i> Logout
+                            </a></li>
+                        </ul>
+                    </div>
+                    {% endif %}
                     <span class="text-sm">
                         <i class="bi bi-calendar3"></i>
                         <span id="currentDate"></span>
@@ -76,7 +89,7 @@
     <!-- Footer -->
     <footer class="bg-construction-gray text-white py-6 mt-12">
         <div class="container mx-auto px-4 text-center">
-            <p>&copy; 2025 Construction Stock Management System. Built with Flask & Bootstrap.</p>
+            <p>&copy; 2025 Construction Stock Management System. Built with <strong>dnldynamicsolutions.com</strong></p>
         </div>
     </footer>
 

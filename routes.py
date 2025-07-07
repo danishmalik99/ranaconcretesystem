@@ -1,6 +1,7 @@
 from flask import render_template, request, redirect, url_for, flash, jsonify
+from flask_login import login_user, login_required, logout_user, current_user
 from app import app, db
-from models import StockEntry
+from models import StockEntry, User
 
 # Category configuration with colors and icons
 CATEGORIES = {
@@ -45,9 +46,93 @@ CATEGORIES = {
 @app.route('/')
 def index():
     """Landing page with category cards"""
+    if not current_user.is_authenticated:
+        return redirect(url_for('login'))
     return render_template('index.html', categories=CATEGORIES)
 
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    """Login page"""
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        
+        if not username or not password:
+            flash('Please enter both username and password', 'error')
+            return render_template('login.html')
+        
+        user = User.query.filter_by(username=username).first()
+        
+        if user and user.check_password(password):
+            login_user(user)
+            next_page = request.args.get('next')
+            return redirect(next_page) if next_page else redirect(url_for('index'))
+        else:
+            flash('Invalid username or password', 'error')
+    
+    return render_template('login.html')
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    """Signup page"""
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    
+    if request.method == 'POST':
+        username = request.form.get('username')
+        email = request.form.get('email')
+        password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
+        
+        if not all([username, email, password, confirm_password]):
+            flash('Please fill in all fields', 'error')
+            return render_template('signup.html')
+        
+        if password != confirm_password:
+            flash('Passwords do not match', 'error')
+            return render_template('signup.html')
+        
+        if len(password) < 6:
+            flash('Password must be at least 6 characters long', 'error')
+            return render_template('signup.html')
+        
+        # Check if user already exists
+        if User.query.filter_by(username=username).first():
+            flash('Username already exists', 'error')
+            return render_template('signup.html')
+        
+        if User.query.filter_by(email=email).first():
+            flash('Email already exists', 'error')
+            return render_template('signup.html')
+        
+        # Create new user
+        user = User(username=username, email=email)
+        user.set_password(password)
+        
+        try:
+            db.session.add(user)
+            db.session.commit()
+            flash('Account created successfully! Please log in.', 'success')
+            return redirect(url_for('login'))
+        except Exception as e:
+            db.session.rollback()
+            flash('Error creating account. Please try again.', 'error')
+    
+    return render_template('signup.html')
+
+@app.route('/logout')
+@login_required
+def logout():
+    """Logout user"""
+    logout_user()
+    flash('You have been logged out successfully.', 'info')
+    return redirect(url_for('login'))
+
 @app.route('/category/<category_name>')
+@login_required
 def category_view(category_name):
     """View stock entries for a specific category"""
     if category_name not in CATEGORIES:
@@ -63,6 +148,7 @@ def category_view(category_name):
                          category_info=category_info)
 
 @app.route('/add_stock', methods=['POST'])
+@login_required
 def add_stock():
     """Add new stock entry"""
     try:
@@ -101,6 +187,7 @@ def add_stock():
     return redirect(url_for('category_view', category_name=category))
 
 @app.route('/delete_stock/<int:serial_no>')
+@login_required
 def delete_stock(serial_no):
     """Delete a stock entry"""
     try:
@@ -119,6 +206,7 @@ def delete_stock(serial_no):
     return redirect(url_for('category_view', category_name=category))
 
 @app.route('/print_entry/<int:serial_no>')
+@login_required
 def print_entry(serial_no):
     """Print a single stock entry"""
     entry = StockEntry.query.get_or_404(serial_no)
@@ -129,6 +217,7 @@ def print_entry(serial_no):
                          category_info=category_info)
 
 @app.route('/print_category/<category_name>')
+@login_required
 def print_category(category_name):
     """Print all entries for a category"""
     if category_name not in CATEGORIES:
