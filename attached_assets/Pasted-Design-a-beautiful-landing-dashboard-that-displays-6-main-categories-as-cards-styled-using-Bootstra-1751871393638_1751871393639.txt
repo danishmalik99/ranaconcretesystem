@@ -1,0 +1,130 @@
+Design a beautiful landing dashboard that displays 6 main categories as cards, styled using Bootstrap + Tailwind. Each category card should have a unique color and icon. Categories are:
+
+Godown 🏠
+
+Double TT 🏗️
+
+Slop 🧱
+
+Column 🪵
+
+Phhty 🚧
+
+Others 📦
+
+Each card should be clickable and navigate to or open a modal/section for its stock management system.
+
+📦 Category Stock Entry System:
+For each of the 6 categories, implement:
+
+An “Add Stock” button with a + icon
+
+Opens a form modal or separate route
+
+Fields:
+
+Size (required)
+
+Quantity (required)
+
+Product Details (optional)
+
+Auto-filled:
+
+Serial No (auto-increment)
+
+Date & Time (auto-filled at submission)
+
+On submission:
+
+Save data to SQLite3 via Django models
+
+Display entries in a styled responsive table
+
+🗂️ Entry Table Features:
+Display stock entries per category with these columns:
+
+Serial No
+
+Date & Time
+
+Size
+
+Quantity
+
+Product Details
+
+Delete Button (🗑️)
+
+Print Button (🖨️)
+
+Add a “Print All Entries” button per category to print the full stock list
+
+🧠 Django Backend Requirements:
+Model:
+
+python
+Copy
+Edit
+class StockEntry(models.Model):
+    CATEGORY_CHOICES = [
+        ('godown', 'Godown'),
+        ('double_tt', 'Double TT'),
+        ('slop', 'Slop'),
+        ('column', 'Column'),
+        ('phhty', 'Phhty'),
+        ('others', 'Others'),
+    ]
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
+    serial_no = models.AutoField(primary_key=True)
+    size = models.CharField(max_length=100)
+    quantity = models.PositiveIntegerField()
+    product_details = models.TextField(blank=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+Views:
+
+Add new entry
+
+Get entries by category
+
+Delete entry
+
+Print entry (HTML print or PDF export)
+
+Templates:
+
+Use Bootstrap + Tailwind + Icons
+
+Each category should have its own stock page or modal
+
+Routing (urls.py):
+
+Home page
+
+Category views
+
+Add/Delete entry routes
+
+Print route
+
+💎 Extra Features (Optional):
+Add search & filter bar per category
+
+Add login system with Django Auth
+
+Use Django Admin to manually manage entries
+
+Export table to PDF (using xhtml2pdf) or Excel (using django-import-export)
+
+SweetAlert2 or Toastify JS for alert popups
+
+Keep entries persistent and printable after page reload
+
+🎯 Output Expectation:
+A fully working web dashboard for managing concrete stock by category
+
+Real-time entry storage with Django backend and SQLite
+
+Print and delete functionality per row
+
+Beautiful UI with icons, color-coded categories, and responsive design
