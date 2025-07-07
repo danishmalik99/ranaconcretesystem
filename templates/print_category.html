@@ -209,7 +209,15 @@
                 </div>
                 <div class="col-md-3 col-6">
                     <div class="stat-item">
-                        <div class="stat-number">{{ entries|selectattr('timestamp')|map(attribute='timestamp')|map('strftime', '%Y-%m')|unique|list|length }}</div>
+                        <div class="stat-number">
+                            {% set months = [] %}
+                            {% for entry in entries %}
+                                {% if entry.timestamp.strftime('%Y-%m') not in months %}
+                                    {% set _ = months.append(entry.timestamp.strftime('%Y-%m')) %}
+                                {% endif %}
+                            {% endfor %}
+                            {{ months|length }}
+                        </div>
                         <div class="stat-label">Active Months</div>
                     </div>
                 </div>
