@@ -30,14 +30,14 @@
                         <div class="col-6">
                             <div class="stat-item">
                                 <i class="bi bi-box-seam text-white-50"></i>
-                                <div class="stat-number text-white fw-bold">--</div>
+                                <div class="stat-number text-white fw-bold">{{ category_stats[category_key].total_items }}</div>
                                 <div class="stat-label text-white-50 small">Total Items</div>
                             </div>
                         </div>
                         <div class="col-6">
                             <div class="stat-item">
                                 <i class="bi bi-clock text-white-50"></i>
-                                <div class="stat-number text-white fw-bold">--</div>
+                                <div class="stat-number text-white fw-bold">{{ category_stats[category_key].last_entry }}</div>
                                 <div class="stat-label text-white-50 small">Last Entry</div>
                             </div>
                         </div>
@@ -76,14 +76,14 @@
                     <div class="col-md-3 col-6 mb-3">
                         <div class="stat-card">
                             <i class="bi bi-boxes text-construction-blue fs-1"></i>
-                            <h3 class="text-construction-blue fw-bold">--</h3>
+                            <h3 class="text-construction-blue fw-bold">{{ total_entries }}</h3>
                             <p class="text-muted">Total Entries</p>
                         </div>
                     </div>
                     <div class="col-md-3 col-6 mb-3">
                         <div class="stat-card">
                             <i class="bi bi-calendar-check text-construction-orange fs-1"></i>
-                            <h3 class="text-construction-orange fw-bold">--</h3>
+                            <h3 class="text-construction-orange fw-bold">{{ monthly_entries }}</h3>
                             <p class="text-muted">This Month</p>
                         </div>
                     </div>
@@ -97,7 +97,7 @@
                     <div class="col-md-3 col-6 mb-3">
                         <div class="stat-card">
                             <i class="bi bi-clock-history text-purple-600 fs-1"></i>
-                            <h3 class="text-purple-600 fw-bold">--</h3>
+                            <h3 class="text-purple-600 fw-bold">{{ last_entry_date }}</h3>
                             <p class="text-muted">Last Update</p>
                         </div>
                     </div>

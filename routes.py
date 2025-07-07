@@ -2,6 +2,7 @@ from flask import render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_user, login_required, logout_user, current_user
 from app import app, db
 from models import StockEntry, User
+from sqlalchemy import extract
 
 # Category configuration with colors and icons
 CATEGORIES = {
@@ -48,7 +49,37 @@ def index():
     """Landing page with category cards"""
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
-    return render_template('index.html', categories=CATEGORIES)
+    
+    # Calculate statistics for each category
+    category_stats = {}
+    for category_key in CATEGORIES.keys():
+        entries = StockEntry.query.filter_by(category=category_key).all()
+        category_stats[category_key] = {
+            'total_items': len(entries),
+            'total_quantity': sum(entry.quantity for entry in entries),
+            'last_entry': entries[-1].timestamp.strftime('%m/%d') if entries else 'Never'
+        }
+    
+    # Overall statistics
+    total_entries = StockEntry.query.count()
+    from datetime import datetime
+    current_month = datetime.now().month
+    current_year = datetime.now().year
+    monthly_entries = StockEntry.query.filter(
+        extract('month', StockEntry.timestamp) == current_month,
+        extract('year', StockEntry.timestamp) == current_year
+    ).count()
+    
+    # Last entry date
+    last_entry = StockEntry.query.order_by(StockEntry.timestamp.desc()).first()
+    last_entry_date = last_entry.timestamp.strftime('%m/%d') if last_entry else 'Never'
+    
+    return render_template('index.html', 
+                         categories=CATEGORIES,
+                         category_stats=category_stats,
+                         total_entries=total_entries,
+                         monthly_entries=monthly_entries,
+                         last_entry_date=last_entry_date)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

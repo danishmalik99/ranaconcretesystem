@@ -92,6 +92,16 @@ This is a Flask-based web application for managing construction materials invent
 
 ## Recent Changes
 
+### July 07, 2025 - Fixed Dashboard Statistics & Category Counts
+- **Fixed Quick Overview section** - Now displays real-time statistics instead of "--"
+- **Fixed Category Cards** - Now showing actual entry counts and last entry dates
+- **Improved Dashboard Route** - Added proper statistics calculation for all categories
+- **Database Integration** - Statistics now update automatically when entries are added
+- **SQLite3 Database** - Confirmed working perfectly with automatic table creation
+- **Authentication System** - Fully functional with protected routes and user management
+- **Category Navigation** - All category cards now link properly to their respective pages
+- **Real-time Data** - Dashboard shows current month entries, total entries, and category breakdowns
+
 ### July 07, 2025 - Database Migration & Authentication System Update
 - **Switched from PostgreSQL to SQLite3** for easier setup and deployment
 - Updated all configuration files to use SQLite3 database
